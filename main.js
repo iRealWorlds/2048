@@ -10,6 +10,7 @@ let score = 0, gameLost = false;
 
 window.addEventListener("load", () => {
     startGame();
+    loadSavedGame();
 
     document.getElementById("restart-button").addEventListener("click", event => {
         event.preventDefault();
@@ -74,14 +75,35 @@ window.addEventListener("load", () => {
                         setHighScore(score);
                     }
                     gameLost = true;
+                    localStorage.removeItem("saved_game");
                     alert("Game lost");
                 }
                 blacklist = [];
                 updateTable();
+                saveGame();
             }
         }
     });
 });
+
+const saveGame = () => {
+    localStorage.setItem("saved_game", JSON.stringify({
+        score,
+        currentTable,
+        blacklist
+    }));
+}
+
+const loadSavedGame = () => {
+    const data = JSON.parse(localStorage.getItem("saved_game"));
+    if (data) {
+        startGame();
+        addScore(data.score);
+        currentTable = data.currentTable;
+        blacklist = data.blacklist;
+        updateTable();
+    }
+}
 
 const startGame = () => {
     currentTable = [
