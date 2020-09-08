@@ -5,6 +5,7 @@ let currentTable = [
     [null, null, null, null],
     [null, null, null, null]
 ];
+let blacklist = [];
 
 const keyCodes = {
     KeyLeft:    37, // stanga
@@ -71,6 +72,8 @@ window.addEventListener("load", () => {
             if (checkLost()) {
                 document.write("praf mai esti smr");
             }
+            blacklist = [];
+            updateTable();
         }
     });
 });
@@ -83,14 +86,14 @@ const executeMove = (from, to) => {
         currentTable[x][y] = currentTable[i][j];
     } else if (currentTable[x][y] === currentTable[i][j]) {
         currentTable[x][y] *= 2;
+        blacklist.push(JSON.stringify([x, y]));
     } else return;
     currentTable[i][j] = null;
-    updateTable();
 }
 
 const move = (i, j, direction) => {
     let moved = false;
-    while (canMoveValue(currentTable[i][j], i + direction.i, j + direction.j)) {
+    while (canMoveValue({i, j}, {i: i + direction.i, j: j + direction.j})) {
         executeMove([i, j], [i + direction.i, j + direction.j]);
         i += direction.i;
         j += direction.j;
@@ -99,12 +102,16 @@ const move = (i, j, direction) => {
     return moved;
 }
 
-const canMoveValue = (value, i, j) => {
-    if (typeof currentTable[i] == "undefined") 
+const canMoveValue = (from, to) => {
+    if (blacklist.includes(JSON.stringify([from.i, from.j])))
         return false;
-    if (typeof currentTable[j] === "undefined") 
+    if (blacklist.includes(JSON.stringify([to.i, to.j])))
+        return false;
+    if (typeof currentTable[to.i] == "undefined") 
+        return false;
+    if (typeof currentTable[to.j] === "undefined") 
         return false;   
-    if (currentTable[i][j] !== null && currentTable[i][j] !== value)
+    if (currentTable[to.i][to.j] !== null && currentTable[to.i][to.j] !== currentTable[from.i][from.j])
         return false;
     return true;
 }
