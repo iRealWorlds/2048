@@ -6,6 +6,7 @@ let currentTable = [
     [null, null, null, null]
 ];
 let blacklist = [];
+let score = 0, gameLost = false;
 
 const keyCodes = {
     KeyLeft:    37, // stanga
@@ -15,65 +16,74 @@ const keyCodes = {
 };
 
 window.addEventListener("load", () => {
+    document.getElementById("bestScore").innerHTML = localStorage.getItem("high_score") ?? 0;
+
     generateRandomTile();
     generateRandomTile();
 
     window.addEventListener("keydown", (event) => {
-        let moved = false;
-        switch (event.key) {
-            case 'ArrowUp':
-            case 'w': { // fortz
-                for (let i = 1; i < GAME_SIZE; ++i) {
-                    for (let j = 0; j < GAME_SIZE; ++j) {
-                        if (currentTable[i][j]) {
-                            moved = move(i, j, {i: -1, j: 0}) || moved;
+        if (!gameLost) {
+            let moved = false;
+            switch (event.key) {
+                case 'ArrowUp':
+                case 'w': { // fortz
+                    for (let i = 1; i < GAME_SIZE; ++i) {
+                        for (let j = 0; j < GAME_SIZE; ++j) {
+                            if (currentTable[i][j]) {
+                                moved = move(i, j, {i: -1, j: 0}) || moved;
+                            }
                         }
                     }
+                    break;
                 }
-                break;
-            }
-            case 'ArrowDown':
-            case 's': {
-                for (let i = GAME_SIZE - 1; i >= 0; --i) {
-                    for (let j = 0; j < GAME_SIZE; ++j) {
-                        if (currentTable[i][j]) {
-                            moved = move(i, j, {i: 1, j: 0}) || moved;
+                case 'ArrowDown':
+                case 's': {
+                    for (let i = GAME_SIZE - 1; i >= 0; --i) {
+                        for (let j = 0; j < GAME_SIZE; ++j) {
+                            if (currentTable[i][j]) {
+                                moved = move(i, j, {i: 1, j: 0}) || moved;
+                            }
                         }
                     }
+                    break;
                 }
-                break;
-            }
-            case 'ArrowLeft':
-            case 'a': {
-                for (let j = 1; j < GAME_SIZE; ++j) {
-                    for (let i = 0; i < GAME_SIZE; ++i) {
-                        if (currentTable[i][j]) {
-                            moved = move(i, j, {i: 0, j: -1}) || moved;
+                case 'ArrowLeft':
+                case 'a': {
+                    for (let j = 1; j < GAME_SIZE; ++j) {
+                        for (let i = 0; i < GAME_SIZE; ++i) {
+                            if (currentTable[i][j]) {
+                                moved = move(i, j, {i: 0, j: -1}) || moved;
+                            }
                         }
                     }
+                    break;
                 }
-                break;
-            }
-            case 'ArrowRight':
-            case 'd': {
-                for (let j = GAME_SIZE - 1; j >= 0; --j) {
-                    for (let i = 0; i < GAME_SIZE; ++i) {
-                        if (currentTable[i][j]) {
-                            moved = move(i, j, {i: 0, j: 1}) || moved;
+                case 'ArrowRight':
+                case 'd': {
+                    for (let j = GAME_SIZE - 1; j >= 0; --j) {
+                        for (let i = 0; i < GAME_SIZE; ++i) {
+                            if (currentTable[i][j]) {
+                                moved = move(i, j, {i: 0, j: 1}) || moved;
+                            }
                         }
                     }
+                    break;
                 }
-                break;
             }
-        }
-
-        if (moved) {
-            generateRandomTile();
-            if (checkLost()) {
-                document.write("praf mai esti smr");
+    
+            if (moved) {
+                generateRandomTile();
+                if (checkLost()) {
+                    const high = localStorage.getItem("high_score") ?? 0;
+                    if (score > high) {
+                        setHighScore(score);
+                    }
+                    gameLost = true;
+                    alert("Game lost");
+                }
+                blacklist = [];
+                updateTable();
             }
-            blacklist = [];
-            updateTable();
         }
     });
 });
@@ -86,6 +96,7 @@ const executeMove = (from, to) => {
         currentTable[x][y] = currentTable[i][j];
     } else if (currentTable[x][y] === currentTable[i][j]) {
         currentTable[x][y] *= 2;
+        addScore(currentTable[x][y]);
         blacklist.push(JSON.stringify([x, y]));
     } else return;
     currentTable[i][j] = null;
@@ -180,4 +191,14 @@ const checkLost = () => {
     }
 
     return true;
+}
+
+const addScore = add => {
+    score += add;
+    document.getElementById("currentScore").innerHTML = score;
+}
+
+const setHighScore = score => {
+    localStorage.setItem("high_score", score);
+    document.getElementById("bestScore").innerHTML = score;
 }
