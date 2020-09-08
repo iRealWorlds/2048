@@ -125,7 +125,7 @@ const updateTable = () => {
             element.classList.remove("is-256");
             element.classList.remove("is-512");
             element.classList.remove("is-1024");
-            element.classList.remove("is-4028");
+            element.classList.remove("is-2048");
 
             if (value === null) {
                 element.innerHTML = "";
