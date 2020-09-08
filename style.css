@@ -57,6 +57,24 @@ body {
   color: #eee4da;
 }
 
+.mt-1 {
+  margin-top: 1rem;
+}
+
+.btn {
+  display: block;
+  background: #8f7a66;
+  border-radius: 3px;
+  padding: 0 20px;
+  text-decoration: none;
+  color: #f9f6f2;
+  height: 40px;
+  line-height: 42px;
+  cursor: pointer;
+  display: block;
+  text-align: center;
+}
+
 #game {
   border: 8px solid #bbada0;
   border-radius: 10px;

@@ -8,18 +8,13 @@ let currentTable = [
 let blacklist = [];
 let score = 0, gameLost = false;
 
-const keyCodes = {
-    KeyLeft:    37, // stanga
-    KeyUp:      38, // sus
-    KeyRight:   39, // dreapta
-    KeyDown:    40, // jos  
-};
-
 window.addEventListener("load", () => {
-    document.getElementById("bestScore").innerHTML = localStorage.getItem("high_score") ?? 0;
+    startGame();
 
-    generateRandomTile();
-    generateRandomTile();
+    document.getElementById("restart-button").addEventListener("click", event => {
+        event.preventDefault();
+        startGame();
+    });
 
     window.addEventListener("keydown", (event) => {
         if (!gameLost) {
@@ -87,6 +82,23 @@ window.addEventListener("load", () => {
         }
     });
 });
+
+const startGame = () => {
+    currentTable = [
+        [null, null, null, null],
+        [null, null, null, null],
+        [null, null, null, null],
+        [null, null, null, null]
+    ];
+    blacklist = [];
+    addScore(-score);
+    gameLost = false;
+    
+    document.getElementById("bestScore").innerHTML = localStorage.getItem("high_score") ?? 0;
+
+    generateRandomTile();
+    generateRandomTile();
+}
 
 const executeMove = (from, to) => {
     const [i, j] = from;
