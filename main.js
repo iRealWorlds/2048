@@ -70,6 +70,9 @@ window.addEventListener("load", () => {
     
             if (moved) {
                 generateRandomTile();
+                blacklist = [];
+                updateTable();
+                saveGame();
                 if (checkLost()) {
                     const high = localStorage.getItem("high_score") ?? 0;
                     if (score > high) {
@@ -79,9 +82,6 @@ window.addEventListener("load", () => {
                     localStorage.removeItem("saved_game");
                     alert("Game lost");
                 }
-                blacklist = [];
-                updateTable();
-                saveGame();
             }
         }
     });
