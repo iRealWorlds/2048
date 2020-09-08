@@ -15,6 +15,7 @@ window.addEventListener("load", () => {
     document.getElementById("restart-button").addEventListener("click", event => {
         event.preventDefault();
         startGame();
+        localStorage.removeItem("saved_game");
     });
 
     window.addEventListener("keydown", (event) => {
